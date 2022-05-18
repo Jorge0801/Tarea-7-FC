@@ -26,6 +26,19 @@ def calcularEnergía(estados, J):
     valorE=-1*energia*J
     
     return valorE
+
+def crearEstadoInicialOrdenado(N, estado):
+    '''
+    Esta función crea un estado inicial con todos los espines de la configuración incial alineados
+    Parameters
+    ----------
+    N : Número de espines que tiene la configuración.
+    estado : Corresponde a ala alineación del espín.
+    Returns
+    -------
+    Retorna la configuración de estados alineada.
+    '''
+    return np.array([estado]*N)
  
 def crearEstadoInicialAleatorio(N):
     '''
