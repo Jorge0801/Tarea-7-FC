@@ -60,7 +60,9 @@ def crearEstadoInicialAleatorio(N):
 
 def realizarSimulacion(N, J, kT, nPasos):
     B = 1/kT #Se define el parámetro Beta
-    estados = crearEstadoInicialAleatorio(N) #Se crea el estado inicial con los espines alineados de forma aleatoria
+    #estados = crearEstadoInicialAleatorio(N) #Se crea el estado inicial con los espines alineados de forma aleatoria
+    #estados = crearEstadoInicialOrdenado(N,1) #Se crea el estado inicial con los espines alineados en dirección positiva
+    estados = crearEstadoInicialOrdenado(N,-1) #Se crea el estado inicial con los espines alineados en dirección negativa
     
     estadosT = estados #Se crea la variable donde se guardan los espines
     energiaInicial = calcularEnergía(estados,J) #Se calcula la energía inicial
@@ -120,7 +122,7 @@ T=1
 estadosT, energiasT  = realizarSimulacion(nEspines,J,T,pasos)
     
 fig, ax = plt.subplots(figsize=(10,10) ,  dpi=120)
-ax.set_title('Modelo Ising 1D para un kt=1')
+ax.set_title('Modelo Ising 1D para un kt=1 ordenado negativo')
 ax.imshow(estadosT.T, 'plasma')
 ax.set_xlabel('Pasos')
 ax.set_ylabel('Espines')
