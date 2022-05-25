@@ -96,8 +96,8 @@ def realizarSimulacion(N, J, kT, nPasos):
    
     B = 1/kT #Se define el parámetro Beta
     #estados = crearEstadoInicialAleatorio(N) #Se crea el estado inicial con los espines alineados de forma aleatoria
-    #estados = crearEstadoInicialOrdenado(N,1) #Se crea el estado inicial con los espines alineados en dirección positiva
-    estados = crearEstadoInicialOrdenado(N,-1) #Se crea el estado inicial con los espines alineados en dirección negativa
+    estados = crearEstadoInicialOrdenado(N,1) #Se crea el estado inicial con los espines alineados en dirección positiva
+    #estados = crearEstadoInicialOrdenado(N,-1) #Se crea el estado inicial con los espines alineados en dirección negativa
     
     estadosT = estados #Se crea la variable donde se guardan los espines
     energiaInicial = calcularEnergía(estados,J) #Se calcula la energía inicial
@@ -242,19 +242,19 @@ T=1
 
 estadosT, energiasT , magnetizacionesT , energiasEquilibrioT , magnetizacionesEquilibrioT , energiasCuadEquilibrioT = realizarSimulacion(nEspines,J,T,pasos)
     
-fig, ax = plt.subplots(figsize=(10,10) ,  dpi=120)
-ax.set_title('Modelo Ising 1D para un kt=1 ordenado negativo')
-ax.imshow(estadosT.T, 'plasma')
-ax.set_xlabel('Pasos')
-ax.set_ylabel('Espines')
-ax.set_aspect('5')    
+#fig, ax = plt.subplots(figsize=(10,10) ,  dpi=120)
+#ax.set_title('Modelo Ising 1D para un kt=1 ordenado negativo')
+#ax.imshow(estadosT.T, 'plasma')
+#ax.set_xlabel('Pasos')
+#ax.set_ylabel('Espines')
+#ax.set_aspect('5')    
     
-repeticiones=25 #Se establecen cuántas ejecuciones se van a hacer
+repeticiones=20 #Se establecen cuántas ejecuciones se van a hacer
 kB=1 #Se define kB=1
 
-#B=0.01 #Se define el valor del campo magnético para la orientación positiva
+B=2 #Se define el valor del campo magnético para la orientación positiva
 #B=-0.01 #Se define el valor del campo magnético para la orientación negativa
-B=0 #Se define el valor del campo magnético para la orientación aleatoria
+#B=0 #Se define el valor del campo magnético para la orientación aleatoria
 
 valoresT = np.linspace(0.1,5,100) #Se establece el universo de valores de temperatura
 #Se inicializan las listas correspondientes para almacenar los datos
