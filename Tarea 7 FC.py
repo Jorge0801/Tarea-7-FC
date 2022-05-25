@@ -100,11 +100,6 @@ def Simulacion(N, J, kT, nPasos):
     #estados = EstadoInicialOrdenado(N,1) #Configutacion positiva
     estados = EstadoInicialOrdenado(N,-1) #Configuracion negativa
 
-    B = 1/kT #Se define el parámetro Beta
-    #estados = crearEstadoInicialAleatorio(N) #Se crea el estado inicial con los espines alineados de forma aleatoria
-    estados = crearEstadoInicialOrdenado(N,1) #Se crea el estado inicial con los espines alineados en dirección positiva
-    #estados = crearEstadoInicialOrdenado(N,-1) #Se crea el estado inicial con los espines alineados en dirección negativa
-
     
     estadosS = estados #Se crea la variable donde se guardan los espines
     energiaInicial = Energía(estados,J) #Se calcula la energía inicial
