@@ -236,7 +236,7 @@ def MagnetizacionAnalitica(J, N, kB , T , B):
     return valorM    
 
 nEspines=100
-pasos=1000
+pasos=2000
 J=1
 T=1   
 
@@ -258,8 +258,6 @@ B=-0.01 #Se define el valor del campo magnético para la orientación negativa
 
 valoresT = np.linspace(0,5,100) #Se establece el universo de valores de temperatura
 #Se inicializan las listas correspondientes para almacenar los datos
-listaEPromedio = []
-listaMPromedio = []
 
 listaUPromedio = []
 listaMPromedioEquilibrio = []
@@ -273,8 +271,7 @@ listaMagnetizacionAnalitica=[]
 #Se recorre el universo de valores de temperatura
 for temp in valoresT:
     #Se inicilizan las listas para guardar los valores correspondientes a cada repetición
-    listaE = []
-    listaM = []
+
     listaEquilibrioE = []
     listaEquilibrioM = []
     listaEquilibrioECuad = []
