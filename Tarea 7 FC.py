@@ -160,7 +160,7 @@ def realizarSimulacion(N, J, kT, nPasos):
     energiasCuadEquilibrio=arregloEnergiasCuad[nEquilibrio::] #Se toman las energías elevadas al cuadrado después del equilibrio
 
    
-    return estadosT, arregloEnergias, arregloMagnetizaciones , energiasEquilibrio , magnetizacionesEquilibrio , energiasCuadEquilibrio
+    return estadosT , energiasEquilibrio , magnetizacionesEquilibrio , energiasCuadEquilibrio
 
 def ReduceYProm(conjunto, ejecuciones, pasos):
     '''
@@ -236,11 +236,11 @@ def MagnetizacionAnalitica(J, N, kB , T , B):
     return valorM    
 
 nEspines=100
-pasos=1000
+pasos=2000
 J=1
 T=1   
 
-estadosT, energiasT , magnetizacionesT , energiasEquilibrioT , magnetizacionesEquilibrioT , energiasCuadEquilibrioT = realizarSimulacion(nEspines,J,T,pasos)
+estadosT , energiasEquilibrioT , magnetizacionesEquilibrioT , energiasCuadEquilibrioT = realizarSimulacion(nEspines,J,T,pasos)
     
 #fig, ax = plt.subplots(figsize=(10,10) ,  dpi=120)
 #ax.set_title('Modelo Ising 1D para un kt=1 ordenado negativo')
@@ -252,14 +252,17 @@ estadosT, energiasT , magnetizacionesT , energiasEquilibrioT , magnetizacionesEq
 repeticiones=20 #Se establecen cuántas ejecuciones se van a hacer
 kB=1 #Se define kB=1
 
+<<<<<<< HEAD
 B=2 #Se define el valor del campo magnético para la orientación positiva
 #B=-0.01 #Se define el valor del campo magnético para la orientación negativa
+=======
+#B=0.01 #Se define el valor del campo magnético para la orientación positiva
+B=-0.01 #Se define el valor del campo magnético para la orientación negativa
+>>>>>>> 21ad197e0ce888d73d29d4dd65e1997528011fe3
 #B=0 #Se define el valor del campo magnético para la orientación aleatoria
 
-valoresT = np.linspace(0.1,5,100) #Se establece el universo de valores de temperatura
+valoresT = np.linspace(0,5,100) #Se establece el universo de valores de temperatura
 #Se inicializan las listas correspondientes para almacenar los datos
-listaEPromedio = []
-listaMPromedio = []
 
 listaUPromedio = []
 listaMPromedioEquilibrio = []
@@ -273,8 +276,7 @@ listaMagnetizacionAnalitica=[]
 #Se recorre el universo de valores de temperatura
 for temp in valoresT:
     #Se inicilizan las listas para guardar los valores correspondientes a cada repetición
-    listaE = []
-    listaM = []
+
     listaEquilibrioE = []
     listaEquilibrioM = []
     listaEquilibrioECuad = []
@@ -284,38 +286,27 @@ for temp in valoresT:
         resultadoEjecucion=realizarSimulacion(nEspines, 1,temp ,pasos)
         
         #Se guarda la longitud de pasos para cada parámetro y se guarda el resultado de la ejecución de cada parámetro
-        #pasosE=len(resultadoEjecucion[1])
-        #listaE.append(resultadoEjecucion[1])
         
-        #pasosM=len(resultadoEjecucion[2])
-        #listaM.append(resultadoEjecucion[2])
+        pasosEquilibrioE=len(resultadoEjecucion[1])
+        listaEquilibrioE.append(resultadoEjecucion[1])
         
-        pasosEquilibrioE=len(resultadoEjecucion[3])
-        listaEquilibrioE.append(resultadoEjecucion[3])
+        pasosEquilibrioM=len(resultadoEjecucion[2])
+        listaEquilibrioM.append(resultadoEjecucion[2])
         
-        pasosEquilibrioM=len(resultadoEjecucion[4])
-        listaEquilibrioM.append(resultadoEjecucion[4])
-        
-        pasosEquilibrioECuad=len(resultadoEjecucion[5])
-        listaEquilibrioECuad.append(resultadoEjecucion[5])
+        pasosEquilibrioECuad=len(resultadoEjecucion[3])
+        listaEquilibrioECuad.append(resultadoEjecucion[3])
         
     #Se establece el arreglo de arreglos de valores para cada parámetro
-    #conjuntoE=np.array(listaE)
-    #conjuntoM=np.array(listaM)
     conjuntoEquilibrioE=np.array(listaEquilibrioE)
     conjuntoEquilibrioM=np.array(listaEquilibrioM)
     conjuntoEquilibrioECuad=np.array(listaEquilibrioECuad)
     
     #Se reducen las fluctuaciones y se calculan los promedios de cada ejecución para cada paso
-    #progresoE=ReduceYProm(conjuntoE, repeticiones, pasosE)
-    #progresoM=ReduceYProm(conjuntoM, repeticiones, pasosM)
     progresoU=ReduceYProm(conjuntoEquilibrioE, repeticiones, pasosEquilibrioE)
     progresoEquilibrioM=ReduceYProm(conjuntoEquilibrioM, repeticiones, pasosEquilibrioM)
     progresoU_2=ReduceYProm(conjuntoEquilibrioECuad, repeticiones, pasosEquilibrioECuad)
     
     #Se calcula el promedio del parámetro para cada temperatura
-    #promEnergiaT = np.sum(progresoE)/len(progresoE)
-    #promMagnetizacionT=np.sum(progresoM)/len(progresoM)
     promUT = np.sum(progresoU)/len(progresoU)
     promMagnetizacionEquilibrioT=np.sum(progresoEquilibrioM)/len(progresoEquilibrioM)
     promU_2T=np.sum(progresoU_2)/len(progresoU_2)
@@ -329,8 +320,6 @@ for temp in valoresT:
     magnetizacionAnalitica=MagnetizacionAnalitica(J, nEspines, kB, temp, B)
     
     #Se guarda el valor obtenido para cada temperatura
-    #listaEPromedio.append(promEnergiaT)
-    #listaMPromedio.append(promMagnetizacionT)
     listaUPromedio.append(promUT)
     listaMPromedioEquilibrio.append(promMagnetizacionEquilibrioT)
     listaU_2Promedio.append(promU_2T)
