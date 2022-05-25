@@ -2,69 +2,69 @@
 """
 Created on Fri May 13 08:23:20 2022
 
-@author: Jorge
+@author: Jorge e Ignacio
 """
 import numpy as np 
 import matplotlib.pyplot as plt
 
-def calcularEnergía(estados, J):
+def Energía(estados, J):
     '''
-    Esta función calcula la energía para cada configuración.
-    Parameters
+    Calcula la energía para cada sistema de espines.
+    Parameteros
     ----------
-    estados : Corresponde a los estados de espines de la configuración.
-    J : Parámetro del cual depende la alineación de equilibrio, establece el comportamiento del material.
-    Returns
+    estados : Estados de espines de la configuración (positivo,negativo o aleatorio).
+    J : Comportamiento ferromagnetico
+    Devuelve
     -------
-    valorE : Corresponde al valor de energía para la configuración.
+    valorE : Energía para el sistema.
     '''
     energia = 0
     for i in range(0,len(estados)-1):
         estados[0] = estados[-1] #Condición de controno
         energia += estados[i]*estados[i+1]
         
-    valorE=-1*energia*J
+    valorEnergía=-1*energia*J
     
-    return valorE
+    return valorEnergía
 
-def calcularMagnetización(estados):
+def Magnetización(estados):
     '''
-    Esta función calcula la magnetización para cada configuración.
-    Parameters
+    Calcula magnetización del sistema.
+    Parametros
     ----------
-    estados : Corresponde a los estados de espines de la configuración.
-    Returns
+    estados : Estados de espines de la configuración (positivo,negativo o aleatorio).
+    Devuelve
     -------
-    magnetizacion : Retorna el valor de magnetización para la configuración.
+    magnetizacion : Retorna el valor de magnetización para el sistema
     '''
     magnetizacion = 0
     for i in range(0,len(estados)):
-        estados[0] = estados[-1] #Condición de controno
+        estados[0] = estados[-1] #controno periódica
         magnetizacion +=estados[i]
-    return magnetizacion
+    return np.absolute(magnetizacion)
 
-def crearEstadoInicialOrdenado(N, estado):
+def EstadoInicialOrdenado(N, estado):
     '''
-    Esta función crea un estado inicial con todos los espines de la configuración incial alineados
-    Parameters
+    Crea un estado inicial con los espines del sistema incial alineados
+    Parametros
     ----------
     N : Número de espines que tiene la configuración.
-    estado : Corresponde a ala alineación del espín.
-    Returns
+    estado : Corresponde a la alineación del espín.
+    Devuelve
     -------
-    Retorna la configuración de estados alineada.
+    Configuración del estado ordenado.
     '''
     return np.array([estado]*N)
  
-def crearEstadoInicialAleatorio(N):
+def EstadoInicialAleatorio(N):
     '''
-    Esta función crea un estado inicial aleatorio.
-    Parameters
+    Crea un estado inicial con los espines del sistema incial alineados
+    Parametros
     ----------
     N : Número de espines que tiene la configuración.
-    Returns
+    Devuelve
     -------
-    estados: Corresponde a la configuración de espines creada.
+    estados: Configuración del estado aleatoria.
     '''
     estados = np.random.rand(1,N)[0]
     for i in range(0,len(estados)):
@@ -74,174 +74,137 @@ def crearEstadoInicialAleatorio(N):
             estados[i] = 1
     return estados
 
-def realizarSimulacion(N, J, kT, nPasos):
+def Simulacion(N, J, kT, nPasos):
     '''
-   Esta función realiza la simulación del Modelo de Ising para una T específica
-   Parameters
+   Simula el modelo Ising
+   Parametros
    ----------
    N : Número de espines que tiene la configuración.
-   J : Parámetro del cual depende la alineación de equilibrio, establece el comportamiento del material.
-   kT : Representa la constante de Boltzmann por la Temperatura, en donde se mantiene k=1.
+   J : Comportamiento farramagnetico
+   kT : constante de Boltzmann tomada como 1
    nPasos : Número de pasos que tendrá la simulación.
    
-   Returns
+   Devuelve
    -------
-   estadosT : Retorna la configuración de espines para cada paso.
-   arregloEnergias : Retorna el arreglo de energías para cada paso.
-   arregloMagnetizaciones : Retorna el arreglo de magnetizaciones para cada paso.
-   energiasEquilibrio : Retorna el arreglo de energías para cada paso despúes de que se alcanza la condición de equilibrio.
-   magnetizacionesEquilibrio : Retorna el arreglo de magnetizaciones para cada paso despúes de que se alcanza la condición de equilibrio.
-   energiasCuadEquilibrio : Retorna el arreglo de energías elevadas al cuadrado para cada paso despúes de que se alcanza la condición de equilibrio.
+   estadosT : Configuración del sistema de espines para cada paso 
+   arregloEnergias : Arreglo de energías.
+   arregloMagnetizaciones : Arreglo de magnetizaciones.
+   energiasEquilibrio : Arreglo de energías para la condición después de equilibrio.
+   magnetizacionesEquilibrio : Arreglo de magnetización para la condición después de equilibrio.
+   UEquilibrio : Arreglo de energías elevadas al cuadrado para la condición después de equilibrio.(Energía interna)
    '''
    
-    B = 1/kT #Se define el parámetro Beta
-    #estados = crearEstadoInicialAleatorio(N) #Se crea el estado inicial con los espines alineados de forma aleatoria
-    #estados = crearEstadoInicialOrdenado(N,1) #Se crea el estado inicial con los espines alineados en dirección positiva
-    estados = crearEstadoInicialOrdenado(N,-1) #Se crea el estado inicial con los espines alineados en dirección negativa
+    cnt = 1/kT #Se define constante de probabilidad
+    #estados = EstadoInicialAleatorio(N) #Configuracion aleatoria
+    #estados = EstadoInicialOrdenado(N,1) #Configutacion positiva
+    estados = EstadoInicialOrdenado(N,-1) #Configuracion negativa
     
-    estadosT = estados #Se crea la variable donde se guardan los espines
-    energiaInicial = calcularEnergía(estados,J) #Se calcula la energía inicial
-    energias = [energiaInicial] #Se inicializa la lista de energías con la energía inicial
-    energiasCuad=[energiaInicial**2] #Se inicializa la lista de energías elevadas al cuadrado con la energía inicial
+    estadosS = estados #Se crea la variable donde se guardan los espines
+    energiaInicial = Energía(estados,J) #Se calcula la energía inicial
+    energias = [energiaInicial] #Lista de energías 
+    UE=[energiaInicial**2] #Lista de energías para energía interna
     
-    magnetizacionInicial=calcularMagnetización(estados) #Se calcula la magnetización inicial
-    magnetizaciones = [magnetizacionInicial] #Se inicializa la lista de energías con la energía inicial
+    magnetizacionInicial=Magnetización(estados) #Se calcula la magnetización inicial
+    magnetizaciones = [magnetizacionInicial] #Lista de magnetización
     
     n = nPasos #Se establece un parámetro n para el ciclo while
-    nEquilibrio=1000 #Condición en el que el sistema entra en equilibrio
+    nEquilibrio=1000 #Sistema entra en equilibrio a NPasos
     
-    while n > 0: #Se establece un ciclo while para hacer los cálculos para cada paso
+    while n > 0: #Ciclo para recorrer n pasos en cada sistema
    
-       pos = np.floor(np.random.rand(1)*N).astype(int)[0] #Se escoge una posición aleatoria en la cual se cambiará la dirección del espín
-       estados[pos] *= -1 #Se cambia la dirección del espín en la posición aleatoria 
-       energiaActual = calcularEnergía(estados,J) #Se calcula la nueva energía después del cambio
-       magnetizacionActual=calcularMagnetización(estados) #Se calcula la nueva magnetización después del cambio
+       pos = np.floor(np.random.rand(1)*N).astype(int)[0] #Posición aleatoria del sistema
+       estados[pos] *= -1 #Cambia dirección 
+       energiaActual = Energía(estados,J) #Calcula nueva energía
+       magnetizacionActual=Magnetización(estados) #Nueva magnetización
        
        
-       if energiaActual < energiaInicial: #Se establece la condición de energía en la cual se acepta realizar el cambio
+       if energiaActual < energiaInicial: #Se evalua la condición de cambio
        
-           energiaInicial = energiaActual #Se realiza el cambio de energía para la siguiente iteración
-           magnetizacionInicial=magnetizacionActual #Se realiza el cambio de magnetización para la siguiente iteración
+           energiaInicial = energiaActual #Se hace el cambio de energía
+           magnetizacionInicial=magnetizacionActual #Cambio de magnetización 
            
-           estadosT = np.row_stack((estadosT, estados)) #Se guarda la configuración de los espines
+           estadosS = np.row_stack((estadosS, estados)) #Guarda configuración del sistema
            energias.append(energiaActual) #Se guarda el valor de energía
-           energiasCuad.append(energiaActual**2) #Se guarda el valor de energía elevada al cuadrado
+           UE.append(energiaActual**2) #Se guarda energía para energía interna
            magnetizaciones.append(magnetizacionActual) #Se guarda el valor de la magnetización
            
-       else: #Si no se cumple la condición de energía para el cambio
+       else: 
        
-           P = np.exp(-B*(energiaActual-energiaInicial)) #Se define la probabilidad para realizar el cambio
+           P = np.exp(-cnt*(energiaActual-energiaInicial)) #Probabilidad de cambio 
            
-           if np.random.rand(1) < P: #Mediante a un número aleatorio, se acepta el cambio
+           if np.random.rand(1) < P: #Número aleatorio se evalua si se acepta el cambio 
                
-               energiaInicial = energiaActual #Se realiza el cambio de energía para la siguiente iteración
-               magnetizacionInicial=magnetizacionActual #Se realiza el cambio de magnetización para la siguiente iteración
+               energiaInicial = energiaActual 
+               magnetizacionInicial=magnetizacionActual 
                
-               estadosT = np.row_stack((estadosT, estados)) #Se guarda la configuración de los espines
-               energias.append(energiaActual) #Se guarda el valor de energía
-               energiasCuad.append(energiaActual**2) ##Se guarda el valor de energía elevada al cuadrado
-               magnetizaciones.append(magnetizacionActual) #Se guarda el valor de la magnetización
+               estadosS = np.row_stack((estadosS, estados)) 
+               energias.append(energiaActual) 
+               UE.append(energiaActual**2) 
+               magnetizaciones.append(magnetizacionActual) 
                
-           else: #Si no se cumple la condición anterior, se rechaza el cambio
+           else: 
            
-               estados[pos] *= -1 #Se vuelve al estado original, pues no se acepta el cambio
-               estadosT = np.row_stack((estadosT, estados)) #Se guarda la configuración de los espines
-               energias.append(energiaInicial) #Se guarda el valor de energía inicial, pues no se acepta el cambio
-               energiasCuad.append(energiaInicial**2) #Se guarda el valor de energía inicial elevada al cuadrado, pues no se acepta el cambio
-               magnetizaciones.append(magnetizacionInicial) #Se guarda el valor de magnetización inicial, pues no se acepta el cambio
+               estados[pos] *= -1 #Se vuelve al estado original, no se acepta el cambio
+               estadosS = np.row_stack((estadosS, estados)) 
+               energias.append(energiaInicial) 
+               UE.append(energiaInicial**2) 
+               magnetizaciones.append(magnetizacionInicial) 
                
-       n -= 1 #Se le resta 1 una vez realizados los cálculos por cada paso
-       
-    arregloEnergias=np.array(energias) #Se establece el arreglo de energías
-    arregloMagnetizaciones=np.array(magnetizaciones) #Se establece el arreglo de magnetizaciones
-    arregloEnergiasCuad=np.array(energiasCuad) #Se establece el arreglo de energías elevadas al cuadrado
-    energiasEquilibrio=arregloEnergias[nEquilibrio::] #Se toman las energías después del equilibrio
-    magnetizacionesEquilibrio=arregloMagnetizaciones[nEquilibrio::] #Se toman las magnetizaciones después del equilibrio
-    energiasCuadEquilibrio=arregloEnergiasCuad[nEquilibrio::] #Se toman las energías elevadas al cuadrado después del equilibrio
+       n -= 1 
+    #Se convierte en arreglos los datos obtenidos    
+    arregloEnergias=np.array(energias) 
+    arregloMagnetizaciones=np.array(magnetizaciones) 
+    arregloUE=np.array(UE) 
+    energiasEquilibrio=arregloEnergias[nEquilibrio::] 
+    magnetizacionesEquilibrio=arregloMagnetizaciones[nEquilibrio::] 
+    UEquilibrio=arregloUE[nEquilibrio::] 
 
    
-    return estadosT , energiasEquilibrio , magnetizacionesEquilibrio , energiasCuadEquilibrio
+    return estadosS , energiasEquilibrio , magnetizacionesEquilibrio , UEquilibrio
 
-def ReduceYProm(conjunto, ejecuciones, pasos):
+def PromedioSimulaciones(conjunto, ejecuciones, pasos):
     '''
-    Esta función realiza las ejecuciones y calcula el promedio para reducir las fluctuaciones.
-    Parameters
+    Función para reducir fluctuaciones después de nSimulaciones
+    Parametros
     ----------
-    conjunto : Corresponde al arreglo de los valores correspondientes a cada ejecución realizada.
-    ejecuciones : Corresponde al número de ejecuciones que se realizan para reducir las fluctuaciones.
-    pasos : Corresponde al número de pasos que se llevaron a cabo en cada ejecución dependiendo del parámetro.
-    Returns
+    conjunto : Arreglo con los datos de cada simulación
+    ejecuciones : NSimulaciones
+    pasos : Npasos
+    Devuelve
     -------
-    arregloProm : Retorna el arreglo de valores promedio para cada caso según las ejecuciones realizadas.
+    arregloProm : Valores promedios para cada paso 
     '''
-    arregloProm = np.zeros (pasos) #Se inicializa un arreglo de ceros
+    Prom = np.zeros (pasos) #Se inicializa un arreglo de ceros
     for valor in range(pasos): #Se hace un contador recorrer el valor en cada paso
         suma=0
         for contadorArrelo in range(ejecuciones): 
             suma += conjunto[contadorArrelo][valor] 
-        arregloProm[valor]=suma/len(conjunto) #En cada paso se calcula el promedio respecto a todas las ejecuciones y se guarda en el arreglo
+        Prom[valor]=suma/len(conjunto) #En cada paso se calcula el promedio respecto a todas las ejecuciones y se guarda en el arreglo
         
-    return arregloProm
+    return Prom
 
+#Se hace el calculo de las soluciones analiticas para cada propiedad termodinamica
 def EnergiaInternaAnalitica(J, N, kB , T):
-    '''
-    Esta función calcula la energia interna de forma analítica respecto al valor de la temperatura.
-    Parameters
-    ----------
-    J : Parámetro del cual depende la alineación de equilibrio, establece el comportamiento del material.
-    N : Corresponde al número de espines.
-    kB : Representa la constante de Boltzmann, en donde se mantiene kB=1.
-    T : Corresponde al valor de la temperatura.
-    Returns
-    -------
-    valorU : Retorna el valor de la energía interna para la temperatura especificada.
-    '''
     valorU=(-1)*J*N*np.tanh(J/(kB*T))
-    
     return valorU
 
 def CalorEspAnalitico(J, kB , T):
-    '''
-    Esta función calcula el calor específico de forma analítica respecto al valor de la temperatura.
-    Parameters
-    ----------
-    J : Parámetro del cual depende la alineación de equilibrio, establece el comportamiento del material.
-    kB : Representa la constante de Boltzmann, en donde se mantiene kB=1.
-    T : Corresponde al valor de la temperatura.
-    Returns
-    -------
-    valorC : Retorna el valor del calor específico para la temperatura especificada.
-    '''
-    
     valorC=(J/(kB*T))**2/np.cosh(J/(kB*T))**2
-    
     return valorC
 
 def MagnetizacionAnalitica(J, N, kB , T , B):
-    '''
-    Esta función calcula la magnetización de forma analítica respecto al valor de la temperatura.
-    Parameters
-    ----------
-    J : Parámetro del cual depende la alineación de equilibrio, establece el comportamiento del material.
-    N : Corresponde al número de espines.
-    kB : Representa la constante de Boltzmann, en donde se mantiene kB=1.
-    T : Corresponde al valor de la temperatura.
-    B : Corresponde al campo magnético del sistema
-    Returns
-    -------
-    valorM : Retorna el valor de la magnetización para la temperatura especificada.
-    '''
     valorM=(N*np.exp(J/(kB*T))*np.sinh(B/(kB*T)))/(np.sqrt(np.exp(2*J/(kB*T))*np.sinh(B/(kB*T))**2+np.exp(-2*J/(kB*T))))
     
     return valorM    
 
 nEspines=100
-pasos=2000
+pasos=1000
 J=1
 T=1   
 
-estadosT , energiasEquilibrioT , magnetizacionesEquilibrioT , energiasCuadEquilibrioT = realizarSimulacion(nEspines,J,T,pasos)
+estadosT , energiasEquilibrioT , magnetizacionesEquilibrioT , energiasUEquilibrioT = Simulacion(nEspines,J,T,pasos)
     
+#Se grafica gráficas para observar el punto de equilibrio del sistema
 #fig, ax = plt.subplots(figsize=(10,10) ,  dpi=120)
 #ax.set_title('Modelo Ising 1D para un kt=1 ordenado negativo')
 #ax.imshow(estadosT.T, 'plasma')
@@ -249,15 +212,15 @@ estadosT , energiasEquilibrioT , magnetizacionesEquilibrioT , energiasCuadEquili
 #ax.set_ylabel('Espines')
 #ax.set_aspect('5')    
     
-repeticiones=20 #Se establecen cuántas ejecuciones se van a hacer
-kB=1 #Se define kB=1
+Nsimulaciones=20 
+kB=1 #
 
-#B=0.01 #Se define el valor del campo magnético para la orientación positiva
-B=-0.01 #Se define el valor del campo magnético para la orientación negativa
-#B=0 #Se define el valor del campo magnético para la orientación aleatoria
+B=0.06 #Se establece un valor de campo magnetico que mejor se adaptara a la simulacion
 
-valoresT = np.linspace(0,5,100) #Se establece el universo de valores de temperatura
-#Se inicializan las listas correspondientes para almacenar los datos
+
+Temperaturas = np.linspace(0,5,100) 
+
+#Se establcen memorias para almacenar datos
 
 listaUPromedio = []
 listaMPromedioEquilibrio = []
@@ -268,56 +231,54 @@ listaUAnalitica=[]
 listaCalorEspAnalitico=[]
 listaMagnetizacionAnalitica=[]
 
-#Se recorre el universo de valores de temperatura
-for temp in valoresT:
-    #Se inicilizan las listas para guardar los valores correspondientes a cada repetición
-
+for t in Temperaturas:
+    #Memoria para guardar los datos de cada simulacion
     listaEquilibrioE = []
     listaEquilibrioM = []
-    listaEquilibrioECuad = []
-    #Se realizan las ejecuciones correspondientes
-    for i in range(repeticiones):
-        #Se realiza la simulación para la ejecución correspondiente
-        resultadoEjecucion=realizarSimulacion(nEspines, 1,temp ,pasos)
+    listaEquilibrioUE = []
+    
+   
+    for i in range(Nsimulaciones):
         
-        #Se guarda la longitud de pasos para cada parámetro y se guarda el resultado de la ejecución de cada parámetro
+        resultadoEjecucion=Simulacion(nEspines, 1,t ,pasos)
         
+    
         pasosEquilibrioE=len(resultadoEjecucion[1])
         listaEquilibrioE.append(resultadoEjecucion[1])
         
         pasosEquilibrioM=len(resultadoEjecucion[2])
         listaEquilibrioM.append(resultadoEjecucion[2])
         
-        pasosEquilibrioECuad=len(resultadoEjecucion[3])
-        listaEquilibrioECuad.append(resultadoEjecucion[3])
+        pasosEquilibrioUE=len(resultadoEjecucion[3])
+        listaEquilibrioUE.append(resultadoEjecucion[3])
         
-    #Se establece el arreglo de arreglos de valores para cada parámetro
+    
     conjuntoEquilibrioE=np.array(listaEquilibrioE)
     conjuntoEquilibrioM=np.array(listaEquilibrioM)
-    conjuntoEquilibrioECuad=np.array(listaEquilibrioECuad)
+    conjuntoEquilibrioUE=np.array(listaEquilibrioUE)
     
-    #Se reducen las fluctuaciones y se calculan los promedios de cada ejecución para cada paso
-    progresoU=ReduceYProm(conjuntoEquilibrioE, repeticiones, pasosEquilibrioE)
-    progresoEquilibrioM=ReduceYProm(conjuntoEquilibrioM, repeticiones, pasosEquilibrioM)
-    progresoU_2=ReduceYProm(conjuntoEquilibrioECuad, repeticiones, pasosEquilibrioECuad)
+    #Se reducen fluctuaciones calculando el promedio para cada temperatura para nSimulaciones
+    progresoU=PromedioSimulaciones(conjuntoEquilibrioE, Nsimulaciones, pasosEquilibrioE)
+    progresoEquilibrioM=PromedioSimulaciones(conjuntoEquilibrioM, Nsimulaciones, pasosEquilibrioM)
+    progresoU_2=PromedioSimulaciones(conjuntoEquilibrioUE, Nsimulaciones, pasosEquilibrioUE)
     
     #Se calcula el promedio del parámetro para cada temperatura
     promUT = np.sum(progresoU)/len(progresoU)
     promMagnetizacionEquilibrioT=np.sum(progresoEquilibrioM)/len(progresoEquilibrioM)
-    promU_2T=np.sum(progresoU_2)/len(progresoU_2)
+    promUE=np.sum(progresoU_2)/len(progresoU_2)
     
     #Se calcula el calor específico utilizando los promedios de las energías correspondientes
-    calorT=(1/nEspines**2)*(promU_2T-promUT**2)/temp**2
+    calorT=(1/nEspines**2)*(promUE-promUT**2)/t**2
     
     #Se calculan la energía interna, el calor específico, y la magnetización de forma analítica
-    energiaIntAnalitica=EnergiaInternaAnalitica(J, nEspines, kB, temp)
-    calorEspAnalitico=CalorEspAnalitico(J, kB, temp)
-    magnetizacionAnalitica=MagnetizacionAnalitica(J, nEspines, kB, temp, B)
+    energiaIntAnalitica=EnergiaInternaAnalitica(J, nEspines, kB, t)
+    calorEspAnalitico=CalorEspAnalitico(J, kB, t)
+    magnetizacionAnalitica=MagnetizacionAnalitica(J, nEspines, kB, t, B)
     
     #Se guarda el valor obtenido para cada temperatura
     listaUPromedio.append(promUT)
     listaMPromedioEquilibrio.append(promMagnetizacionEquilibrioT)
-    listaU_2Promedio.append(promU_2T)
+    listaU_2Promedio.append(promUE)
     
     listaCalorEsp.append(calorT)
     
@@ -335,14 +296,14 @@ color = 'tab:red'
 ax3.set_title('Modelo Ising 1D Calor Específico vs. T')
 ax3.set_xlabel('kT')
 ax3.set_ylabel('C analítico', color=color)
-ax3.plot(valoresT, listaCalorEspAnalitico, color=color)
+ax3.plot(Temperaturas, listaCalorEspAnalitico, color=color)
 ax3.tick_params(axis='y', labelcolor=color)
 
 ax4 = ax3.twinx()  
 
 color = 'tab:blue'
 ax4.set_ylabel('C simulación', color=color)  
-ax4.plot(valoresT, listaCalorEsp, color=color)
+ax4.plot(Temperaturas, listaCalorEsp, color=color)
 ax4.tick_params(axis='y', labelcolor=color)
 
 fig3.tight_layout()
@@ -355,14 +316,14 @@ color = 'tab:red'
 ax5.set_title('Modelo Ising 1D Energía Interna vs. T')
 ax5.set_xlabel('kT')
 ax5.set_ylabel('U analítica', color=color)
-ax5.plot(valoresT, listaUAnalitica, color=color)
+ax5.plot(Temperaturas, listaUAnalitica, color=color)
 ax5.tick_params(axis='y', labelcolor=color)
 
 ax6 = ax5.twinx()  
 
 color = 'tab:blue'
 ax6.set_ylabel('U simulación', color=color)  
-ax6.plot(valoresT, listaUPromedio, color=color)
+ax6.plot(Temperaturas, listaUPromedio, color=color)
 ax6.tick_params(axis='y', labelcolor=color)
 
 fig5.tight_layout()
@@ -375,14 +336,14 @@ color = 'tab:red'
 ax7.set_title('Modelo Ising 1D Magnetización vs. T')
 ax7.set_xlabel('kT')
 ax7.set_ylabel('M analítica', color=color)
-ax7.plot(valoresT, listaMagnetizacionAnalitica, color=color)
+ax7.plot(Temperaturas, listaMagnetizacionAnalitica, color=color)
 ax7.tick_params(axis='y', labelcolor=color)
 
 ax8 = ax7.twinx()  
 
 color = 'tab:blue'
 ax8.set_ylabel('M simulación', color=color)  
-ax8.plot(valoresT, listaMPromedioEquilibrio, color=color)
+ax8.plot(Temperaturas, listaMPromedioEquilibrio, color=color)
 ax8.tick_params(axis='y', labelcolor=color)
 
 fig7.tight_layout()
