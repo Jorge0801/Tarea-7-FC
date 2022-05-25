@@ -41,7 +41,7 @@ def calcularMagnetización(estados):
     for i in range(0,len(estados)):
         estados[0] = estados[-1] #Condición de controno
         magnetizacion +=estados[i]
-    return magnetizacion
+    return np.absolute(magnetizacion)
 
 def crearEstadoInicialOrdenado(N, estado):
     '''
@@ -236,7 +236,7 @@ def MagnetizacionAnalitica(J, N, kB , T , B):
     return valorM    
 
 nEspines=100
-pasos=2000
+pasos=1000
 J=1
 T=1   
 
@@ -252,13 +252,9 @@ estadosT , energiasEquilibrioT , magnetizacionesEquilibrioT , energiasCuadEquili
 repeticiones=20 #Se establecen cuántas ejecuciones se van a hacer
 kB=1 #Se define kB=1
 
-<<<<<<< HEAD
-B=2 #Se define el valor del campo magnético para la orientación positiva
+
+B=0.06 #Se define el valor del campo magnético para la orientación positiva
 #B=-0.01 #Se define el valor del campo magnético para la orientación negativa
-=======
-#B=0.01 #Se define el valor del campo magnético para la orientación positiva
-B=-0.01 #Se define el valor del campo magnético para la orientación negativa
->>>>>>> 21ad197e0ce888d73d29d4dd65e1997528011fe3
 #B=0 #Se define el valor del campo magnético para la orientación aleatoria
 
 valoresT = np.linspace(0,5,100) #Se establece el universo de valores de temperatura
