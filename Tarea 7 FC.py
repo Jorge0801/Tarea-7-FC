@@ -94,10 +94,17 @@ def Simulacion(N, J, kT, nPasos):
    UEquilibrio : Arreglo de energías elevadas al cuadrado para la condición después de equilibrio.(Energía interna)
    '''
    
+<<<<<<< HEAD
     cnt = 1/kT #Se define constante de probabilidad
     #estados = EstadoInicialAleatorio(N) #Configuracion aleatoria
     #estados = EstadoInicialOrdenado(N,1) #Configutacion positiva
     estados = EstadoInicialOrdenado(N,-1) #Configuracion negativa
+=======
+    B = 1/kT #Se define el parámetro Beta
+    #estados = crearEstadoInicialAleatorio(N) #Se crea el estado inicial con los espines alineados de forma aleatoria
+    estados = crearEstadoInicialOrdenado(N,1) #Se crea el estado inicial con los espines alineados en dirección positiva
+    #estados = crearEstadoInicialOrdenado(N,-1) #Se crea el estado inicial con los espines alineados en dirección negativa
+>>>>>>> 8659ebc7dc20c271b1bebe205d999ee5ecbd5be3
     
     estadosS = estados #Se crea la variable donde se guardan los espines
     energiaInicial = Energía(estados,J) #Se calcula la energía inicial
@@ -215,7 +222,14 @@ estadosT , energiasEquilibrioT , magnetizacionesEquilibrioT , energiasUEquilibri
 Nsimulaciones=20 
 kB=1 #
 
+<<<<<<< HEAD
 B=0.06 #Se establece un valor de campo magnetico que mejor se adaptara a la simulacion
+=======
+
+B=0.06 #Se define el valor del campo magnético para la orientación positiva
+#B=-0.01 #Se define el valor del campo magnético para la orientación negativa
+#B=0 #Se define el valor del campo magnético para la orientación aleatoria
+>>>>>>> 8659ebc7dc20c271b1bebe205d999ee5ecbd5be3
 
 
 Temperaturas = np.linspace(0,5,100) 
